@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI时代的师生关系 - 精准避让微调</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Zhi+Mang+Xing&display=swap');
+
+        :root {
+            --maillard-dark: #2A1810;   
+            --maillard-mid: #795548;    
+            --maillard-light: #BCAAA4;  
+            --maillard-warm: #FFFBF5;   
+            --tech-blue: #051020;       
+            --tech-glow-ai: #00FFFF;    
+            --tech-glow-eai: #3B82F6;   
+            --ethical-red: rgba(139, 0, 0, 0.45); 
+        }
+
+        body {
+            background-color: #FFFFFF; 
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--maillard-dark);
+            overflow-x: hidden;
+        }
+
+        .brush-font {
+            font-family: 'Zhi Mang Xing', cursive;
+            color: var(--maillard-dark);
+        }
+
+        .formula-glow {
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(121, 85, 72, 0.3), 0 0 8px rgba(245, 166, 35, 0.5);
+            animation: formula-pulse 3s infinite ease-in-out;
+            border: 2px solid var(--maillard-light);
+            z-index: 200;
+        }
+
+        @keyframes formula-pulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(121, 85, 72, 0.2); transform: scale(1); }
+            50% { box-shadow: 0 0 30px rgba(121, 85, 72, 0.4), 0 0 15px rgba(245, 166, 35, 0.6); transform: scale(1.05); }
+        }
+
+        .ethical-tube-outer {
+            border: 24px solid var(--ethical-red);
+            border-radius: 60px;
+            position: relative;
+            background: transparent;
+            z-index: 10;
+            width: 960px;
+            margin-top: 40px;
+        }
+        
+        .ethical-text-embedded {
+            position: absolute;
+            right: -24px; 
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            color: #FFD700;
+            background: linear-gradient(135deg, #4a0000 0%, #8b0000 50%, #4a0000 100%);
+            background-size: 200% 200%;
+            padding: 25px 8px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: 6px;
+            z-index: 100;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.8);
+            border: 2px solid #5D0000;
+            animation: shimmer-red 3s infinite linear;
+        }
+
+        @keyframes shimmer-red {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .floor-block-infra { background-color: #D7CCC8; }
+        .floor-block-app { background-color: #EFEBE9; }
+        .floor-block-tech { background-color: #A1887F; }
+
+        .tech-sphere {
+            width: 105px;
+            height: 105px;
+            min-width: 105px; 
+            min-height: 105px; 
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1e293b, var(--tech-blue));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            position: relative;
+        }
+
+        .ai-sphere { border: 3px solid var(--tech-glow-ai); box-shadow: 0 0 40px rgba(0, 255, 255, 0.6); }
+        .eai-sphere { border: 3px solid var(--tech-glow-eai); box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+
+        .seal-text-svg {
+            position: absolute;
+            width: 220px; 
+            height: 220px;
+            animation: rotate-clockwise 20s linear infinite;
+            z-index: 50;
+        }
+
+        @keyframes rotate-clockwise { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .hi-zone-scale {
+            transform: scale(1.1);
+            transform-origin: center center;
+            margin-top: 40px; 
+        }
+
+        .hi-ellipse {
+            background-color: rgba(121, 85, 72, 0.08); 
+            border-radius: 50%;
+            width: 95%;
+            height: 260px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            border: 2px dashed var(--maillard-mid);
+        }
+
+        .field-container {
+            background-color: var(--maillard-warm);
+            clip-path: polygon(5% 0%, 95% 0%, 100% 10%, 100% 100%, 0% 100%, 0% 10%);
+            padding: 40px 20px 0px 20px;
+            position: relative;
+            z-index: 5;
+            border-top: 4px solid var(--maillard-mid);
+            margin-top: 20px;
+        }
+
+        .tag-glow {
+            background: #FFFFFF;
+            border: 1.5px solid var(--maillard-mid);
+            box-shadow: 2px 2px 10px rgba(62, 39, 35, 0.15);
+            color: var(--maillard-dark);
+        }
+
+        .avatar-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(62, 39, 35, 0.25);
+            border: 4px solid white;
+            padding: 8px;
+        }
+
+        .bg-teacher { background-color: #B9CDE5; } 
+        .bg-student { background-color: #EBCAB2; } 
+
+        /* 动画粒子路径控制 */
+        .pulse-dot-center {
+            offset-path: path('M 500 260 L 500 380'); 
+            animation: move-dot-alternate 3s infinite ease-in-out; 
+        }
+        .pulse-dot-left {
+            offset-path: path('M 460 216 L 210 780');
+            animation: move-dot-alternate 4.5s infinite ease-in-out;
+        }
+        .pulse-dot-right {
+            offset-path: path('M 540 216 L 790 780');
+            animation: move-dot-alternate 4.5s infinite ease-in-out;
+        }
+
+        @keyframes move-dot-alternate {
+            0% { offset-distance: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            50% { offset-distance: 100%; opacity: 1; }
+            90% { opacity: 1; }
+            100% { offset-distance: 0%; opacity: 0; }
+        }
+    </style>
+</head>
+<body class="p-6 min-h-screen flex flex-col items-center">
+
+    <div class="relative w-[1000px] h-[1200px] flex flex-col items-center">
+        
+        <h1 class="brush-font text-7xl mt-4 mb-2">AI时代的师生关系</h1>
+
+        <!-- 背景层与动态连线 -->
+        <div class="absolute inset-0 z-[150] pointer-events-none">
+             <!-- 公式展示 -->
+             <div class="absolute top-[215px] right-[60px] formula-glow px-4 py-2 rounded-xl">
+                <h2 class="text-2xl font-black text-stone-900 italic tracking-tighter">HI + AI = IA</h2>
+            </div>
+
+            <svg class="w-full h-full" viewBox="0 0 1000 1200">
+                <defs>
+                    <marker id="arr-bidir-start" markerWidth="8" markerHeight="8" refX="1" refY="3" orient="auto">
+                        <path d="M8,0 L8,6 L1,3 z" fill="#2A1810" />
+                    </marker>
+                    <marker id="arr-bidir-end" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#2A1810" />
+                    </marker>
+                    
+                    <!-- 路径微调：
+                         linkPathCore 起点从 240 下移并回缩至 260 (回缩两个位)
+                         终点从 360 下移至 380 (下移一个字符位 + 适配回缩长度)
+                    -->
+                    <path id="pathLeftLower" d="M 460 216 L 210 780" />
+                    <path id="pathRightLower" d="M 540 216 L 790 780" />
+                    <path id="linkPathCore" d="M 500 260 L 500 380" />
+                </defs>
+                
+                <!-- 中央联线 -->
+                <use xlink:href="#linkPathCore" stroke="#2A1810" stroke-width="4" marker-start="url(#arr-bidir-start)" marker-end="url(#arr-bidir-end)" />
+                
+                <!-- 游动粒子 -->
+                <circle r="6" fill="#00FFFF" class="pulse-dot-center" filter="drop-shadow(0 0 5px #00FFFF)"></circle>
+                <circle r="5" fill="#795548" class="pulse-dot-left" filter="drop-shadow(0 0 3px #795548)"></circle>
+                <circle r="5" fill="#795548" class="pulse-dot-right" filter="drop-shadow(0 0 3px #795548)"></circle>
+
+                <!-- 路径文字：教师侧 -->
+                <text class="text-[14px] font-black" fill="#800000">
+                    <textPath xlink:href="#pathLeftLower" startOffset="5%" dy="54">
+                        ⬅️ 设定边界 | 教学目标 | 干预策略
+                    </textPath>
+                </text>
+                <text class="text-[14px] font-black" fill="#003366">
+                    <textPath xlink:href="#pathLeftLower" startOffset="55%" dy="54">
+                        学情洞察 | 智能助教 | 高效科研 ➡️
+                    </textPath>
+                </text>
+
+                <!-- 路径文字：学生侧 -->
+                <text class="text-[14px] font-black" fill="#800000">
+                    <textPath xlink:href="#pathRightLower" startOffset="5%" dy="54">
+                        ⬅️ 发出意图 | 调用工具 | 数据反哺
+                    </textPath>
+                </text>
+                <text class="text-[14px] font-black" fill="#003366">
+                    <textPath xlink:href="#pathRightLower" startOffset="52%" dy="54">
+                        智能学伴 | 情绪树洞 | 成长顾问 | 创造性表达 ➡️
+                    </textPath>
+                </text>
+            </svg>
+        </div>
+
+        <div class="ethical-tube-outer flex flex-col shadow-2xl">
+            <div class="ethical-text-embedded">伦理 · 法律 · 后果</div>
+
+            <!-- AI 球体 -->
+            <div class="flex flex-col items-center pt-10 relative z-[100] transform translate-y-[-24px]">
+                <div class="tech-sphere ai-sphere">
+                    <i class="fas fa-microchip text-[--tech-glow-ai] text-4xl mb-1"></i>
+                    <span class="font-black text-white text-xl tracking-tighter">AI</span>
+                </div>
+            </div>
+
+            <!-- 核心场域 -->
+            <div class="field-container w-full">
+                <div class="absolute top-12 left-10 z-[160]">
+                    <div class="text-2xl font-black text-stone-800 border-b-2 border-stone-800 pb-1 mb-2">真实世界 场域</div>
+                    <ul class="text-xs text-stone-700 space-y-1 font-bold bg-white/50 p-2 rounded">
+                        <li>• 物理资源</li>
+                        <li>• 社会场域</li>
+                        <li>• 具身反馈</li>
+                    </ul>
+                </div>
+
+                <!-- EAI 旋转环 -->
+                <div class="flex flex-col items-center justify-center mb-4 relative h-48">
+                    <svg class="seal-text-svg" viewBox="0 0 160 160" style="width:190px; height:190px;">
+                        <defs><path id="sealPath" d="M 80, 80 m -64, 0 a 64,64 0 1,1 128,0 a 64,64 0 1,1 -128,0" /></defs>
+                        <text fill="#2A1810" font-size="11" font-weight="900" letter-spacing="1">
+                            <textPath xlink:href="#sealPath">物理因果 - 现实拟合 - 具身参与 - 响应闭环 •</textPath>
+                        </text>
+                    </svg>
+                    <div class="tech-sphere eai-sphere">
+                        <i class="fas fa-robot text-[--tech-glow-eai] text-4xl mb-1"></i>
+                        <span class="font-black text-white text-xl tracking-tighter">EAI</span>
+                    </div>
+                </div>
+
+                <!-- HI 师生区域 -->
+                <div class="relative h-[480px] w-full hi-zone-scale">
+                    <div class="hi-ellipse"></div>
+                    
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 480">
+                        <defs>
+                            <marker id="hi-arrow-end" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                <path d="M0,0 L0,6 L6,3 z" fill="#2A1810" />
+                            </marker>
+                        </defs>
+                        <!-- 上方弧线：教师 -> 学生 -->
+                        <path d="M280 180 Q 400 130 520 180" fill="none" stroke="#2A1810" stroke-width="3" stroke-dasharray="6,3" marker-end="url(#hi-arrow-end)" />
+                        <!-- 下方弧线：学生 -> 教师 (箭头在左侧指向教师) -->
+                        <path d="M520 350 Q 400 400 280 350" fill="none" stroke="#2A1810" stroke-width="3" stroke-dasharray="6,3" marker-end="url(#hi-arrow-end)" />
+                    </svg>
+
+                    <div class="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full">
+                        <h2 class="text-[11rem] font-black text-stone-400 opacity-20 absolute pointer-events-none">HI</h2>
+                        <div class="flex flex-col items-center justify-center gap-1 z-10 relative">
+                            <span class="text-xl font-black text-stone-600 tracking-[0.2em] uppercase">Co-learning</span>
+                            <span class="text-xl font-black text-stone-600 tracking-[0.3em] uppercase">CO-INQUIRY</span>
+                            <span class="text-xl font-black text-stone-600 tracking-[0.2em] uppercase">Co-creation</span>
+                        </div>
+                    </div>
+
+                    <!-- 角色头像 -->
+                    <div class="absolute left-[10%] top-[35%]">
+                        <div class="avatar-circle bg-teacher">
+                            <i class="fas fa-chalkboard-teacher text-4xl text-stone-900 mb-1"></i>
+                            <span class="font-black text-stone-900 text-base">教师</span>
+                        </div>
+                    </div>
+                    <div class="absolute right-[10%] top-[35%]">
+                        <div class="avatar-circle bg-student">
+                            <i class="fas fa-user-graduate text-4xl text-stone-900 mb-1"></i>
+                            <span class="font-black text-stone-900 text-base">学生</span>
+                        </div>
+                    </div>
+
+                    <!-- 标签云 -->
+                    <div class="absolute top-[18%] left-1/2 -translate-x-1/2 flex gap-2">
+                        <span class="tag-glow text-[10px] px-3 py-1.5 rounded-full font-black">价值确认</span>
+                        <span class="tag-glow text-[10px] px-3 py-1.5 rounded-full font-black">情感关怀</span>
+                        <span class="tag-glow text-[10px] px-3 py-1.5 rounded-full font-black">学习设计</span>
+                        <span class="tag-glow text-[10px] px-3 py-1.5 rounded-full font-black">决策指导</span>
+                    </div>
+                    
+                    <div class="absolute bottom-[18%] left-1/2 -translate-x-1/2 flex gap-3 w-full justify-center">
+                        <span class="tag-glow text-[9px] px-3 py-1.5 rounded-lg font-black">要我学 → 我要学</span>
+                        <span class="tag-glow text-[9px] px-3 py-1.5 rounded-lg font-black">单向灌输 → 双方赋能</span>
+                        <span class="tag-glow text-[9px] px-3 py-1.5 rounded-lg font-black">成果 → 过程&多元化成果</span>
+                        <span class="tag-glow text-[9px] px-3 py-1.5 rounded-lg font-black">对答案 → 高阶对话</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底座 -->
+            <div class="w-full bg-stone-100 rounded-b-[36px] overflow-hidden">
+                <div class="flex h-20 border-t-2 border-stone-300">
+                    <div class="flex-1 floor-block-infra p-3 text-center border-r-2 border-dashed border-stone-400">
+                        <h3 class="font-black text-stone-900 text-sm">基础设施</h3>
+                        <div class="text-[9px] text-stone-800 font-bold">云端硬件 / 算力中心 / 语料库</div>
+                    </div>
+                    <div class="flex-1 floor-block-app p-3 text-center border-r-2 border-dashed border-stone-400">
+                        <h3 class="font-black text-stone-900 text-sm">应用层</h3>
+                        <div class="text-[9px] text-stone-800 font-bold">垂类模型 / 智慧校园 / 学习工具</div>
+                    </div>
+                    <div class="flex-1 floor-block-tech p-3 text-center">
+                        <h3 class="font-black text-stone-900 text-sm">技术层</h3>
+                         <div class="text-[9px] text-stone-800 font-bold">算法架构 / 多模态感知</div>
+                    </div>
+                </div>
+                <div class="text-center py-1.5 font-black text-stone-900 text-[10px] bg-stone-300 tracking-[1em] pl-[1em]">支撑环境层</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
