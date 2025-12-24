@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024-2025 全球年度热词观察报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 美拉德结合绿色系调色盘 */
+            --maillard-dark: #2D1B10; /* 深焦糖棕 */
+            --maillard-accent: #8B4513; /* 鞍褐 */
+            --sage-bg: #F0F4F0; /* 鼠尾草灰绿背景 */
+            --forest-green: #2F4F4F; /* 森林深绿 */
+            --mint-glow: #98FF98; /* 薄荷绿发光 */
+            --amber-glow: #FFBF00; /* 琥珀色发光 */
+            --text-dark: #1F2937;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--sage-bg);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-height: 850px) { body { overflow-y: auto; height: auto; } }
+
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+
+        /* 卡片动效 */
+        .list-container { overflow-y: auto; flex: 1; }
+        .word-card { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-left-width: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        .word-card:hover { 
+            transform: translateX(8px); 
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .word-card.active { 
+            background-color: #ffffff; 
+            border-right: 4px solid var(--forest-green);
+        }
+
+        /* 动态发光效果 */
+        .glow-cn { box-shadow: 0 0 15px rgba(139, 69, 19, 0.3); }
+        .glow-intl { box-shadow: 0 0 15px rgba(47, 79, 79, 0.3); }
+        
+        .main-layout { 
+            display: grid; 
+            grid-template-columns: repeat(12, 1fr); 
+            gap: 1.5rem; 
+            flex: 1; 
+            overflow: hidden; 
+            padding: 1rem 2rem; 
+        }
+
+        /* 页脚美拉德背景 */
+        .maillard-footer {
+            background-color: var(--maillard-dark);
+            border-top: 4px solid var(--maillard-accent);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header: 保持简洁专业 -->
+    <header class="w-full bg-white/70 backdrop-blur-md border-b border-gray-200 shrink-0 px-8 py-4">
+        <div class="max-w-screen-2xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-black text-[#2D1B10] tracking-tighter">2024-2025 全球年度热词观察</h1>
+                <p class="text-sm text-gray-500 font-bold uppercase tracking-widest mt-1">Cross-Cultural Linguistic Surveillance Report</p>
+            </div>
+            <div class="flex bg-gray-200/50 p-1.5 rounded-2xl">
+                <button id="btn-2024" class="px-10 py-2.5 rounded-xl text-sm font-black transition-all" onclick="setYear(2024)">2024</button>
+                <button id="btn-2025" class="px-10 py-2.5 rounded-xl text-sm font-black transition-all" onclick="setYear(2025)">2025</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-layout max-w-screen-2xl mx-auto w-full">
+        
+        <!-- Left: Word Clouds -->
+        <div class="col-span-12 lg:col-span-7 flex flex-col min-h-0 gap-4">
+            <div class="grid grid-cols-2 gap-5 h-full">
+                <!-- CN: Maillard Theme -->
+                <div class="flex flex-col bg-white/40 rounded-3xl border border-white/60 shadow-inner overflow-hidden">
+                    <div class="bg-[#8B4513] px-5 py-3 flex justify-between items-center">
+                        <span class="font-black text-white tracking-widest text-lg">🇨🇳 中国·年度之声</span>
+                        <span id="cn-count" class="bg-white/20 text-white px-2.5 py-0.5 rounded-lg text-xs font-black">0</span>
+                    </div>
+                    <div id="cn-list" class="list-container custom-scroll p-4 space-y-3"></div>
+                </div>
+                <!-- Intl: Green Theme -->
+                <div class="flex flex-col bg-white/40 rounded-3xl border border-white/60 shadow-inner overflow-hidden">
+                    <div class="bg-[#2F4F4F] px-5 py-3 flex justify-between items-center">
+                        <span class="font-black text-white tracking-widest text-lg">🌍 国际·全球共振</span>
+                        <span id="intl-count" class="bg-white/20 text-white px-2.5 py-0.5 rounded-lg text-xs font-black">0</span>
+                    </div>
+                    <div id="intl-list" class="list-container custom-scroll p-4 space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Insight Panel -->
+        <div class="col-span-12 lg:col-span-5 flex flex-col gap-5 min-h-0">
+            <!-- Global Narrative -->
+            <div class="bg-white/80 rounded-3xl p-5 border border-white shadow-sm shrink-0">
+                <p class="text-base text-[#2D1B10] leading-relaxed">
+                    <span class="font-black text-[#8B4513] border-b-2 border-[#8B4513]/30 pb-1">核心观察：</span> 
+                    2025年人类在AI狂热后转向<strong class="font-black">“韧性”</strong>与<strong class="font-black text-[#2F4F4F]">“治理”</strong>。中国关注技术根源的求索，而国际社会则在反思算法带来的社交异化。
+                </p>
+            </div>
+
+            <!-- Focus Display -->
+            <div id="info-panel" class="bg-white rounded-3xl border-l-[12px] border-gray-100 p-8 shadow-xl flex flex-col shrink-0 transition-all duration-500">
+                <div class="flex justify-between items-start mb-4">
+                    <span id="info-cat" class="text-xs font-black text-gray-400 tracking-[0.3em] uppercase">Insight</span>
+                    <span id="info-org" class="text-xs font-bold px-4 py-1.5 rounded-full text-white transition-all duration-500">机构来源</span>
+                </div>
+                <h2 id="info-title" class="text-5xl font-black text-[#1A202C] mb-4 tracking-tighter">选词观察</h2>
+                <div id="info-body" class="text-gray-600 text-xl leading-relaxed overflow-y-auto max-h-[140px] custom-scroll">
+                    请在左侧点击热词以查看深度解析。
+                </div>
+            </div>
+
+            <!-- Data Radar -->
+            <div class="bg-white/90 rounded-3xl p-6 shadow-sm flex-1 min-h-0 flex flex-col border border-white">
+                <h4 class="text-xs font-black text-gray-400 mb-4 uppercase tracking-[0.2em]">Radar Mapping / 多维语意映射</h4>
+                <div class="flex-1 relative">
+                    <canvas id="radarCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Maillard & Gold Footer -->
+    <footer class="maillard-footer shrink-0 py-10 px-12">
+        <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="space-y-3 text-center md:text-left">
+                <p class="text-2xl text-white">
+                    <span class="font-black tracking-tight">项目创意：刘奔海</span>
+                </p>
+                <p class="text-lg text-[#D2B48C] font-medium opacity-80">Technological Realization: Gemini AI Engine</p>
+            </div>
+            <div class="md:text-right max-w-2xl">
+                <p class="text-xs font-black text-[#DEB887] uppercase tracking-[0.4em] mb-4">Data Authority & Research Sources</p>
+                <p class="text-base text-[#F5E6D3] font-medium leading-relaxed">
+                    国家语言资源监测与研究中心 · 咬文嚼字 · 汉语盘点 · 新华网 · Oxford · Cambridge · Merriam-Webster · Collins
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const database = {
+            2025: {
+                cn: [
+                    { word: '韧', sub: '年度国内字', org: '汉语盘点', scores: [2, 9, 8, 4], desc: '在复杂多变的全球局势中，强调保持战略定力、核心竞争力和内生的强韧生命力。' },
+                    { word: 'DeepSeek', sub: '年度词/流行语', org: '汉语盘点/咬文嚼字', scores: [10, 9, 8, 1], desc: '国产通用模型大突破。不仅是技术的飞跃，更是中国在AI领域深度求索精神的写照。' },
+                    { word: '具身智能', sub: '年度流行语', org: '咬文嚼字', scores: [9, 8, 7, 3], desc: 'AI与物理实体融合。2025年被视为人形机器人商业落地与智能硬件进化的分水岭。' },
+                    { word: '苏超', sub: '年度流行语', org: '咬文嚼字', scores: [4, 7, 9, 3], desc: '指代某种突破圈层、超越常规的顶级表现，反映了大众对卓越个体的高度认同。' },
+                    { word: '赛博对账', sub: '年度流行语', org: '咬文嚼字', scores: [7, 5, 8, 6], desc: '数字化时代的契约核查。网友通过多维数据交叉比对事实，体现算法透明度需求。' },
+                    { word: '数字游民', sub: '年度流行语', org: '咬文嚼字', scores: [6, 9, 7, 2], desc: '远程办公常态化。地理边界模糊，生活方式从固定职场转向全球移动。' },
+                    { word: '谷子', sub: '年度流行语', org: '咬文嚼字', scores: [3, 8, 10, 2], desc: '二次元经济全面爆发。Goods的谐音，象征年轻人情感寄托与精神消费的崛起。' },
+                    { word: '十五五规划', sub: '热点词', org: '新华网', scores: [1, 9, 10, 1], desc: '关乎未来五年的国家核心战略布局，象征着由量向质的全面转型关键期。' },
+                    { word: '票根经济', sub: '热点词', org: '国家语言中心', scores: [2, 7, 8, 2], desc: '文博与演出市场的井喷。一张票根带动的是体验消费与社会情绪的共鸣。' }
+                ],
+                intl: [
+                    { word: 'Slop', sub: '年度词 (AI垃圾)', org: '韦氏词典', scores: [9, 1, 8, 10], desc: '对互联网上低质、无意义AI生成内容的警惕。反映了人类对信息质量退化的担忧。' },
+                    { word: 'Rage-bait', sub: '年度词 (愤怒诱饵)', org: '牛津词典', scores: [8, 2, 9, 9], desc: '批判为了算法流量而蓄意煽动大众负面情绪的内容。社会正在反思流量至上的负面影响。' },
+                    { word: 'Parasocial', sub: '年度词 (拟态人际)', org: '剑桥词典', scores: [5, 4, 10, 7], desc: '描述单方面的情感联系。这种拟态关系在虚拟社交时代重新定义了孤独与连接。' },
+                    { word: 'Vibe coding', sub: '年度词 (氛围编程)', org: '柯林斯词典', scores: [10, 8, 6, 2], desc: '通过自然语言描述“意图”而非语法来编程。AI让创造力不再受制于技术屏障。' },
+                    { word: 'Demure', sub: '入围词 (端庄)', org: '韦氏词典', scores: [2, 7, 9, 3], desc: '在喧嚣年代回归内敛、得体。反映了一种对古典美德与简约生活的向往。' },
+                    { word: 'Enshittification', sub: '入围词 (平台腐坏)', org: '牛津词典', scores: [8, 1, 9, 10], desc: '平台为过度变现而牺牲用户体验的行业顽疾，标志着互联网早期红利的终结。' }
+                ]
+            },
+            2024: {
+                cn: [
+                    { word: '智', sub: '年度国内字', org: '汉语盘点', scores: [10, 8, 9, 4], desc: 'AI元年。智能技术全面渗透从工业设计到日常生活的每一个角落。' },
+                    { word: '新质生产力', sub: '年度国内词', org: '汉语盘点', scores: [8, 9, 10, 1], desc: '以创新为主导，实现生产力的质变，是高质量发展的核心动力。' },
+                    { word: '人工智能', sub: '年度国际词', org: '汉语盘点', scores: [10, 7, 10, 5], desc: '全球共识。标志着第四次工业革命的全面提速。' },
+                    { word: '班味', sub: '流行语', org: '咬文嚼字', scores: [1, 3, 10, 9], desc: '职场人精神状态的精准画像。反映了工作压力下个体自我调侃与释放。' },
+                    { word: '松弛感', sub: '流行语', org: '咬文嚼字', scores: [1, 9, 8, 2], desc: '面对紧崩的社会节奏，追求平和、从容的生活哲学。' },
+                    { word: 'City不City', sub: '流行语', org: '咬文嚼字', scores: [1, 10, 10, 1], desc: '现象级梗。跨文化视角下的城市体验感，充满时尚色彩。' },
+                    { word: '硬控', sub: '流行语', org: '咬文嚼字', scores: [4, 6, 10, 4], desc: '指被强烈吸引。在碎片化时代，人们对高质量注意力的渴望。' },
+                    { word: '数智化', sub: '热点词', org: '国家语言中心', scores: [9, 8, 9, 2], desc: '数字化升级到智能化的必然跨越。' },
+                    { word: '智能向善', sub: '热点词', org: '国家语言中心', scores: [8, 10, 7, 1], desc: '强调算法背后的伦理准则与人类价值。' }
+                ],
+                intl: [
+                    { word: 'Brain rot', sub: '年度词 (脑腐)', org: '牛津词典', scores: [7, 1, 10, 10], desc: '对短视频蚕食思维深度、认知降级的深刻集体忧虑。' },
+                    { word: 'Brat', sub: '年度词 (顽童)', org: '柯林斯词典', scores: [2, 8, 10, 3], desc: '反叛、真实、不加修饰的生命力表达，引领了全年的流行文化审美。' },
+                    { word: 'Manifest', sub: '年度词 (显现)', org: '剑桥词典', scores: [2, 9, 8, 2], desc: '心理暗示与目标实现的结合。在不确定年代寻求精神确定性。' },
+                    { word: 'Authentic', sub: '年度词 (真实)', org: '韦氏词典', scores: [1, 9, 9, 5], desc: '在深伪与滤镜泛滥的时代，人们对“本真”的极度渴求。' },
+                    { word: 'Dynamic pricing', sub: '入围词', org: '柯林斯', scores: [6, 2, 8, 8], desc: '算法驱动的实时价格变动引发的社会公平性争议。' },
+                    { word: 'Lore', sub: '入围词', org: '牛津', scores: [3, 6, 9, 3], desc: '关于设定、历史背景与故事宇宙的探求。' }
+                ]
+            }
+        };
+
+        let radarChart = null;
+
+        function setYear(year) {
+            document.getElementById('btn-2024').className = year === 2024 ? "px-10 py-2.5 rounded-xl text-sm font-black bg-[#2D1B10] text-white shadow-xl scale-105" : "px-10 py-2.5 rounded-xl text-sm font-black text-gray-400 hover:text-gray-700 hover:bg-white";
+            document.getElementById('btn-2025').className = year === 2025 ? "px-10 py-2.5 rounded-xl text-sm font-black bg-[#2D1B10] text-white shadow-xl scale-105" : "px-10 py-2.5 rounded-xl text-sm font-black text-gray-400 hover:text-gray-700 hover:bg-white";
+            
+            renderList('cn-list', database[year].cn, 'cn');
+            renderList('intl-list', database[year].intl, 'intl');
+            
+            document.getElementById('cn-count').innerText = database[year].cn.length;
+            document.getElementById('intl-count').innerText = database[year].intl.length;
+            
+            updateRadar(year);
+        }
+
+        function renderList(id, list, type) {
+            const container = document.getElementById(id);
+            container.innerHTML = '';
+            list.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `word-card p-4 rounded-2xl border border-white/50 cursor-pointer ${type==='cn'?'border-l-[#8B4513]':'border-l-[#2F4F4F]'}`;
+                div.onclick = () => {
+                    document.querySelectorAll('.word-card').forEach(el => el.classList.remove('active'));
+                    div.classList.add('active');
+                    const panel = document.getElementById('info-panel');
+                    panel.style.borderLeftColor = type === 'cn' ? '#8B4513' : '#2F4F4F';
+                    
+                    document.getElementById('info-cat').innerText = item.sub;
+                    const orgTag = document.getElementById('info-org');
+                    orgTag.innerText = item.org;
+                    orgTag.className = `text-xs font-black px-4 py-1.5 rounded-full text-white transition-all duration-300 ${type==='cn'?'bg-[#8B4513] glow-cn':'bg-[#2F4F4F] glow-intl'}`;
+                    
+                    document.getElementById('info-title').innerText = item.word;
+                    document.getElementById('info-body').innerText = item.desc;
+                };
+                div.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="text-xl font-black text-[#1A202C]">${item.word}</span>
+                        <div class="flex items-center gap-2 mt-2">
+                             <span class="text-[10px] font-black px-2 py-0.5 bg-gray-100 text-gray-500 rounded">${item.org}</span>
+                             <span class="text-[10px] font-bold text-gray-400 tracking-tight">${item.sub}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateRadar(year) {
+            const cnAvg = [0,0,0,0];
+            const intlAvg = [0,0,0,0];
+            database[year].cn.forEach(i => i.scores.forEach((s, idx) => cnAvg[idx] += s / database[year].cn.length));
+            database[year].intl.forEach(i => i.scores.forEach((s, idx) => intlAvg[idx] += s / database[year].intl.length));
+
+            const ctx = document.getElementById('radarCanvas').getContext('2d');
+            if(radarChart) radarChart.destroy();
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['技术硬核度', '情绪乐观度', '大众关注度', '反思焦虑感'],
+                    datasets: [
+                        { label: '中国视角', data: cnAvg, backgroundColor: 'rgba(139, 69, 19, 0.1)', borderColor: 'rgba(139, 69, 19, 1)', pointRadius: 4, borderWidth: 3 },
+                        { label: '国际视角', data: intlAvg, backgroundColor: 'rgba(47, 79, 79, 0.1)', borderColor: 'rgba(47, 79, 79, 1)', pointRadius: 4, borderWidth: 3 }
+                    ]
+                },
+                options: { 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 12, weight: '900' } } } },
+                    scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 12, weight: 'black' }, color: '#2D1B10' } } } 
+                }
+            });
+        }
+
+        window.onload = () => setYear(2025);
+    </script>
+</body>
+</html>
