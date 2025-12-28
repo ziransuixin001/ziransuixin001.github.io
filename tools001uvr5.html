@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UVR终极指南</title>
+    <style>
+        /* 基础样式 - 移动端优先 */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* 移动端响应式调整 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                font-size: 15px;
+            }
+            
+            .details-content {
+                padding: 20px 16px !important;
+            }
+            
+            summary {
+                padding: 16px 20px !important;
+                font-size: 16px !important;
+            }
+            
+            summary::after {
+                right: 20px !important;
+            }
+            
+            h1 {
+                font-size: 24px !important;
+            }
+            
+            h2 {
+                font-size: 20px !important;
+            }
+            
+            h3 {
+                font-size: 18px !important;
+            }
+            
+            table {
+                font-size: 14px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .nav-links {
+                gap: 8px !important;
+            }
+            
+            .nav-link {
+                padding: 6px 12px !important;
+                font-size: 13px !important;
+                flex: 1 0 calc(50% - 8px) !important;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            th, td {
+                padding: 10px 8px !important;
+                font-size: 13px !important;
+            }
+        }
+        
+        /* 添加平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 移动端触摸优化 */
+        summary {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        /* details样式 */
+        details {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+            transition: all 0.3s ease;
+        }
+        
+        details[open] {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            border-color: #4a90e2;
+        }
+        
+        /* 添加跳转目标 */
+        details:target {
+            animation: highlight 1.5s ease;
+        }
+        
+        @keyframes highlight {
+            0%, 100% { border-color: #4a90e2; }
+            50% { border-color: #ff6b6b; box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2); }
+        }
+        
+        /* summary样式 */
+        summary {
+            padding: 20px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            cursor: pointer;
+            list-style: none;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        /* 自定义箭头 */
+        summary::after {
+            content: '▼';
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        details[open] summary::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        /* 内容区域 */
+        .details-content {
+            padding: 24px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 导航链接样式 */
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .nav-link {
+            background: #f8f9fa;
+            padding: 10px 18px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #495057;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            flex: 1 0 auto;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* 移动端优化导航 */
+        @media (max-width: 480px) {
+            .nav-link {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+        }
+        
+        /* 内容样式 */
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        h3 {
+            color: #3498db;
+            margin-top: 20px;
+        }
+        
+        p {
+            margin: 12px 0;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4a90e2;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 4px solid #f39c12;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+        
+        /* 卡片网格布局 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        /* 表格优化 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        /* 底部区域优化 */
+        .footer-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .footer-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .footer-card {
+            flex: 1;
+            min-width: 120px;
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        
+        /* 移动端底部卡片调整 */
+        @media (max-width: 480px) {
+            .footer-grid {
+                flex-direction: column;
+            }
+            
+            .footer-card {
+                min-width: auto;
+            }
+        }
+        
+        /* 改进的FAQ区域 */
+        .faq-details {
+            margin-bottom: 12px;
+        }
+        
+        .faq-details summary {
+            background: #fff3cd;
+            color: #856404;
+            padding: 16px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+        
+        .faq-details[open] summary {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        /* 移动端触摸按钮优化 */
+        button, .nav-link, summary {
+            min-height: 44px; /* 苹果推荐的最小触摸区域 */
+        }
+    </style>
+</head>
+<body>
+
+<!-- 标题区域 -->
+<div style="text-align: center; margin-bottom: 40px;">
+    <h1>🎵 UVR终极指南</h1>
+    <p style="color: #7f8c8d; font-size: 16px;">音频分离完全手册 · 从入门到精通</p>
+</div>
+
+<!-- 导航区 -->
+<div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    <h3 style="margin-top: 0;">📑 快速导航</h3>
+    <div class="nav-links">
+        <a href="#section1" class="nav-link">🚀 快速开始</a>
+        <a href="#section2" class="nav-link">🔧 引擎解析</a>
+        <a href="#section3" class="nav-link">🎯 场景指南</a>
+        <a href="#section4" class="nav-link">⚙️ 进阶技巧</a>
+        <a href="#section5" class="nav-link">❓ 故障排除</a>
+    </div>
+</div>
+
+<!-- 折叠区域开始 -->
+<details id="section1">
+    <summary>🚀 第一章：5分钟快速上手</summary>
+    <div class="details-content">
+        <p>如果你是第一次使用UVR，按照以下步骤即可完成首次分离：</p>
+        
+        <div class="highlight">
+            <h3>📝 快速流程</h3>
+            <ol style="margin: 12px 0; padding-left: 20px;">
+                <li><strong>下载安装</strong>：从GitHub获取官方版本</li>
+                <li><strong>获取模型</strong>：首次启动会自动下载基础模型</li>
+                <li><strong>导入音频</strong>：支持MP3、WAV、FLAC等格式</li>
+                <li><strong>选择模型</strong>：新手首选 <code>MDX23C-InstVoc HQ</code></li>
+                <li><strong>开始处理</strong>：点击"Start Processing"等待完成</li>
+            </ol>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ 注意事项：</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li>首次使用需下载模型文件（约1-2GB）</li>
+                <li>建议使用WAV格式输出以获得最佳音质</li>
+                <li>处理时间取决于音频长度和电脑性能</li>
+            </ul>
+        </div>
+        
+        <h3>推荐设置（新手）</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <tr style="background: #f8f9fa;">
+                    <th>参数</th>
+                    <th>推荐值</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>输出格式</td>
+                    <td><code>WAV</code></td>
+                    <td>无损格式，音质最佳</td>
+                </tr>
+                <tr>
+                    <td>Segment Size</td>
+                    <td><code>2048</code></td>
+                    <td>平衡质量与内存</td>
+                </tr>
+                <tr>
+                    <td>模型</td>
+                    <td><code>MDX23C-InstVoc HQ</code></td>
+                    <td>伴奏提取效果最均衡</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</details>
+
+<details id="section2">
+    <summary>🔧 第二章：三大AI引擎深度解析</summary>
+    <div class="details-content">
+        <p>UVR的强大源于其集成的多种深度学习引擎。理解它们是选择正确模型的关键。</p>
+        
+        <div class="card-grid">
+            <div style="background: #e8f4fd; border-radius: 8px; padding: 20px; border-left: 4px solid #3498db;">
+                <h4 style="margin-top: 0; color: #2c3e50;">🧠 MDX-Net系列</h4>
+                <p><strong>定位：</strong>伴奏分离专家</p>
+                <p><strong>优势：</strong>人声消除干净，音乐性保持完整</p>
+                <p><strong>代表模型：</strong></p>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li><code>MDX23C-InstVoc HQ</code></li>
+                    <li><code>UVR-MDX-NET Inst HQ 3</code></li>
+                    <li><code>Kim Vocal 2</code></li>
+                </ul>
+                <p><strong>适用：</strong>制作翻唱伴奏、提取相对纯净人声</p>
+            </div>
+            
+            <div style="background: #f0f7e6; border-radius: 8px; padding: 20px; border-left: 4px solid #2ecc71;">
+                <h4 style="margin-top: 0; color: #2c3e50;">🎼 Demucs系列</h4>
+                <p><strong>定位：</strong>多音轨分离专家</p>
+                <p><strong>优势：</strong>唯一支持鼓、贝斯、人声、其他分离</p>
+                <p><strong>代表模型：</strong></p>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li><code>htdemucs</code></li>
+                    <li><code>htdemucs_ft</code>（现场优化）</li>
+                </ul>
+                <p><strong>适用：</strong>专业音乐制作、提取特定乐器分轨</p>
+            </div>
+            
+            <div style="background: #fef5e7; border-radius: 8px; padding: 20px; border-left: 4px solid #e67e22;">
+                <h4 style="margin-top: 0; color: #2c3e50;">👤 VR Architecture系列</h4>
+                <p><strong>定位：</strong>人声处理专家</p>
+                <p><strong>优势：</strong>人声中频细节保留最佳，降噪能力强</p>
+                <p><strong>代表模型：</strong></p>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li><code>VR 4band_v3</code></li>
+                    <li><code>UVR-DeNoise-Lite.pth</code></li>
+                </ul>
+                <p><strong>适用：</strong>人声音频优化、去除背景噪音</p>
+            </div>
+        </div>
+    </div>
+</details>
+
+<details id="section3">
+    <summary>🎯 第三章：按场景选择模型（抄作业版）</summary>
+    <div class="details-content">
+        <p>根据你的具体目标，直接使用以下推荐配置：</p>
+        
+        <div style="overflow-x: auto; margin: 24px 0;">
+            <table>
+                <thead>
+                    <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <th>你的目标</th>
+                        <th>首选模型</th>
+                        <th>关键设置</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #f8f9fa;">
+                        <td>提取翻唱伴奏</td>
+                        <td><code>MDX23C-InstVoc HQ</code></td>
+                        <td>默认设置即可</td>
+                    </tr>
+                    <tr>
+                        <td>提取采样用人声</td>
+                        <td><code>VR 4band_v3</code></td>
+                        <td>适当调整Compensate参数</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td>分离鼓、贝斯等乐器</td>
+                        <td><code>htdemucs</code></td>
+                        <td>唯一支持多音轨分离</td>
+                    </tr>
+                    <tr>
+                        <td>制作卡拉OK（彻底消人声）</td>
+                        <td><code>UVR-MDX-NET Karaoke</code></td>
+                        <td>启用Post-Processing</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td>去除老唱片噪音</td>
+                        <td><code>UVR-DeNoise-Lite.pth</code></td>
+                        <td>对分离后音频使用</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</details>
+
+<details id="section4">
+    <summary>⚙️ 第四章：进阶技巧与参数调优</summary>
+    <div class="details-content">
+        <h3>🎯 Ensemble Mode（集成模式）</h3>
+        <p>UVR的"杀手锏"功能，允许多个模型同时处理并综合结果，质量通常比单一模型更稳定。</p>
+        
+        <div class="highlight">
+            <h4>💡 黄金组合示例（极致伴奏质量）：</h4>
+            <div class="card-grid">
+                <div style="background: white; padding: 12px; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 24px; margin-bottom: 8px;">1</div>
+                    <code>MDX23C-InstVoc HQ</code>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">基础分离</div>
+                </div>
+                <div style="background: white; padding: 12px; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 24px; margin-bottom: 8px;">2</div>
+                    <code>UVR-MDX-NET Inst Main</code>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">二次优化</div>
+                </div>
+                <div style="background: white; padding: 12px; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 24px; margin-bottom: 8px;">3</div>
+                    <code>Kim Vocal 2</code>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">细节增强</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>⚡ 关键参数：Segment Size</h3>
+        <p>这个参数直接影响分离质量和内存占用：</p>
+        
+        <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 16px 0;">
+            <table>
+                <tr>
+                    <td style="width: 40%;"><strong>普通歌曲（3-5分钟）</strong></td>
+                    <td><code>2048</code>（默认）</td>
+                </tr>
+                <tr>
+                    <td><strong>复杂/长音频</strong></td>
+                    <td>降低到 <code>1024</code> 或 <code>512</code></td>
+                </tr>
+                <tr>
+                    <td><strong>追求极致质量（显存充足）</strong></td>
+                    <td>可尝试 <code>4096</code></td>
+                </tr>
+                <tr>
+                    <td><strong>提示"Cuda out of memory"</strong></td>
+                    <td>立即降低此值</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</details>
+
+<details id="section5">
+    <summary>❓ 第五章：常见问题与解决方案</summary>
+    <div class="details-content">
+        <details class="faq-details">
+            <summary>分离后还有人声残留？</summary>
+            <div style="padding: 16px; background: #fefefe;">
+                <p><strong>解决方案：</strong></p>
+                <ol>
+                    <li><strong>更换模型</strong>：尝试不同引擎的模型（如从MDX换到VR）</li>
+                    <li><strong>使用Ensemble Mode</strong>：组合多个模型处理</li>
+                    <li><strong>调整参数</strong>：增大<code>Segment Size</code></li>
+                    <li><strong>启用Post-processing</strong>：使用Reduce Vocals选项</li>
+                </ol>
+            </div>
+        </details>
+        
+        <details class="faq-details">
+            <summary>提示"Cuda out of memory"（GPU内存不足）</summary>
+            <div style="padding: 16px; background: #fefefe;">
+                <p><strong>解决方案：</strong></p>
+                <ol>
+                    <li><strong>降低Segment Size</strong>：从2048降到1024或512</li>
+                    <li><strong>换用轻量模型</strong>：使用带"Light"后缀的模型</li>
+                    <li><strong>切换到CPU模式</strong>：在设置中关闭GPU加速（速度会变慢）</li>
+                    <li><strong>分批处理</strong>：将长音频分割为3分钟以下段落</li>
+                </ol>
+            </div>
+        </details>
+        
+        <details class="faq-details">
+            <summary>处理速度非常慢</summary>
+            <div style="padding: 16px; background: #fefefe;">
+                <p><strong>解决方案：</strong></p>
+                <ol>
+                    <li><strong>使用"Light"系列模型</strong></li>
+                    <li><strong>确保使用GPU加速</strong>：在设置中检查GPU是否启用</li>
+                    <li><strong>减小Segment Size</strong>：降低处理质量换取速度</li>
+                    <li><strong>关闭其他占用GPU的程序</strong></li>
+                </ol>
+            </div>
+        </details>
+    </div>
+</details>
+
+<!-- 文末区域 -->
+<div class="footer-section">
+    <h3 style="color: #2c3e50; margin-top: 0;">🎉 恭喜你完成UVR终极指南！</h3>
+    <p style="margin-bottom: 24px;">现在你已掌握从基础使用到高阶调优的全部技巧</p>
+    
+    <div class="footer-grid">
+        <div class="footer-card">
+            <div style="font-size: 24px; margin-bottom: 8px;">📥</div>
+            <strong>收藏本文</strong>
+            <div style="font-size: 12px; color: #666; margin-top: 4px;">随时查阅参考</div>
+        </div>
+        <div class="footer-card">
+            <div style="font-size: 24px; margin-bottom: 8px;">🔧</div>
+            <strong>动手实践</strong>
+            <div style="font-size: 12px; color: #666; margin-top: 4px;">理论结合实操</div>
+        </div>
+        <div class="footer-card">
+            <div style="font-size: 24px; margin-bottom: 8px;">💬</div>
+            <strong>分享交流</strong>
+            <div style="font-size: 12px; color: #666; margin-top: 4px;">评论区讨论技巧</div>
+        </div>
+    </div>
+    
+    <p style="color: #7f8c8d; font-size: 14px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+        工具说明书001 · UVR终极指南 · 版本1.1<br>
+        为深度创作者提供有价值的工具参考
+    </p>
+</div>
+
+<script>
+    // 修复快速导航功能 - 自动展开目标部分
+    document.addEventListener('DOMContentLoaded', function() {
+        // 处理锚点导航
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    // 展开目标details元素
+                    if (targetElement.tagName === 'DETAILS') {
+                        targetElement.open = true;
+                    }
+                    
+                    // 平滑滚动到目标位置，考虑移动端状态栏
+                    const offset = 80;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 添加高亮效果
+                    targetElement.style.animation = 'none';
+                    setTimeout(() => {
+                        targetElement.style.animation = 'highlight 1.5s ease';
+                    }, 10);
+                }
+            });
+        });
+        
+        // 检查URL中的锚点并自动展开
+        if (window.location.hash) {
+            const targetId = window.location.hash.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement && targetElement.tagName === 'DETAILS') {
+                // 等待页面加载完成
+                setTimeout(() => {
+                    targetElement.open = true;
+                    
+                    // 滚动到目标位置
+                    const offset = 80;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }, 300);
+            }
+        }
+        
+        // 移动端触摸优化：阻止双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+    });
+    
+    // 移动端优化：调整字体大小
+    function adjustFontSize() {
+        const width = window.innerWidth;
+        const html = document.documentElement;
+        
+        if (width <= 480) {
+            html.style.fontSize = '14px';
+        } else if (width <= 768) {
+            html.style.fontSize = '15px';
+        } else {
+            html.style.fontSize = '16px';
+        }
+    }
+    
+    // 初始调整
+    adjustFontSize();
+    
+    // 窗口大小变化时调整
+    window.addEventListener('resize', adjustFontSize);
+</script>
+
+</body>
+</html>
